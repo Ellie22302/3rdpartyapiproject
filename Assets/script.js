@@ -1,7 +1,11 @@
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
 // in the html.
+const localeSettings = {};
+  dayjs.locale(localeSettings);
+
 $(function () {
+  const cHour = dayjs().format('H');
   // TODO: Add a listener for click events on the save button. This code should
   // use the id in the containing time-block as a key to save the user input in
   // local storage. HINT: What does `this` reference in the click listener
@@ -9,7 +13,13 @@ $(function () {
   // time-block containing the button that was clicked? How might the id be
   // useful when saving the description in local storage?
   //
-
+  function save(){
+    $('.saveBtn').on('click', function() {
+      const key = $(this).parent().attr('id');
+      const value = $(this).siblings('.description').val();
+      localStorage.setItem(key, value);
+    });
+  }
 
 
 
@@ -21,7 +31,18 @@ $(function () {
   // past, present, and future classes? How can Day.js be used to get the
   // current hour in 24-hour time?
   //
-
+function colors(){
+  $('.time-block').each(function() {
+    const bHour = parseInt(this.id);
+    if (bHour == cHour) {
+      $(this).removeClass('past future').addClass('present');
+    } else if (bHour < cHour) {
+      $(this).removeClass('future present').addClass('past');
+    } else {
+      $(this).removeClass('past present').addClass('future');
+    }
+  });
+}
 
 
 
@@ -35,6 +56,21 @@ $(function () {
 
 
   // TODO: Add code to display the current date in the header of the page.
+  function showTime(){
+    const dateEl = $('#date');
+    const timeEl = $('#time');
+    const curDate = dayjs().format('dddd, MMMM D, YYYY');
+    const curTime = dayjs().format('hh:mm:ss A');
+    dateEl.text(curDate);
+    timeEl.text(curTime);
+  }
+  setInterval(showTime, 1000);
+
+
+  console.log(showTime);
+  dayjs().toDate()
   var now = dayjs()
   console.log(now.$d);
+  save();
+  colors();
 });
