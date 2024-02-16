@@ -1,11 +1,18 @@
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
+
 const localeSettings = {};
   dayjs.locale(localeSettings);
 
 $(function () {
   const cHour = dayjs().format('H');
+
+  function hColor(){
+    $('.time-block').each(function(){
+      const bHour = parseInt(this.id);
+      $(this).toggleClass('past', bHour < cHour);
+      $(this).toggleClass('present', bHour === cHour);
+      $(this).toggleClass('future', bHour > cHour);
+    });
+  }
 
 function colors(){
   $('.time-block').each(function() {
@@ -27,17 +34,13 @@ function save(){
     localStorage.setItem(key, value);
   });
 }
+$('.time-block').each(function(){
+  const key= $(this).attr('id');
+  const value= localStorage.getItem(key);
+  $(this).children('.description').val(value);
+})
 
 
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-  //
-
-
-
-
-  // TODO: Add code to display the current date in the header of the page.
   function showTime(){
     const dateEl = $('#date');
     const timeEl = $('#time');
@@ -46,13 +49,14 @@ function save(){
     dateEl.text(curDate);
     timeEl.text(curTime);
   }
-  setInterval(showTime, 1000);
+  
 
-
-  console.log(showTime);
-  dayjs().toDate()
-  var now = dayjs()
-  console.log(now.$d);
+  hColor();
   save();
   colors();
+  setInterval(showTime, 1000);
 });
+ // console.log(showTime);
+  // dayjs().toDate()
+  // var now = dayjs()
+  // console.log(now.$d);
